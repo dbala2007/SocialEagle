@@ -6,8 +6,14 @@
 # 60 – 69 D
 # Below 60 E
 
+class InvalidMarkError(Exception):
+    """Raised when the mark is invalid"""
+    pass
+
 def check_grade(mark):
-    if (mark >= 90) & (mark <= 100):
+    if (mark > 100) | (mark < 0):
+        raise InvalidMarkError("Mark should be within 0 - 100 only.")
+    elif mark >= 90:
         grade = "A"
     elif mark >= 80:
         grade = "B"
@@ -21,8 +27,8 @@ def check_grade(mark):
 
 try:
     mark = int(input("Enter your mark (0-100): "))
+    grade = check_grade(mark)
 except Exception as e:
     print(f"An error occurred {e}")
 else:
-    grade = check_grade(mark)
     print(f"Mark: {mark} -> Grade: {grade}")
