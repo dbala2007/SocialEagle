@@ -28,3 +28,21 @@ short comment (for example, “Good for outdoor activities”).
 - Take a screenshot of the final Excel sheet and save it.
 
 Refer **daily_bot_report > daily_bot_report.py**
+
+*Assignment 2*
+
+> Use Playwright to automate Web Whatsapp Message Bot
+
+- Log in to WhatsApp Web (handle the QR code manually on the first run).
+- Read contacts from an Excel file named contacts.xlsx with columns: Name, Phone (with
+country code, e.g. +91xxxxxxxxxx), and Message (an optional template).
+- For each contact: search the contact or number, send a personalized message (replace {name}
+with the actual name), wait for the message to be sent, then take a screenshot of the sent
+message.
+- Smart data extraction (bonus core part): after sending, open a contact and extract the last 3
+messages from them.
+- Save everything in a report as both JSON and Excel.
+- whatsapp_report_YYYY-MM-DD.json (full details).
+- whatsapp_report_YYYY-MM-DD.xlsx (a summary).
+
+Refer **playwright_whatsapp_bot > playwright_whatsapp_bot.py**
