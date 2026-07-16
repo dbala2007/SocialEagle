@@ -1,6 +1,7 @@
-from playwright.sync_api import sync_playwright
+from playwright.async_api import async_playwright
 from datetime import datetime
 import pandas as pd
+import asyncio
 
 print("Starting the Playwright script...")
 print(f"Current date and time: {datetime.now()}")
@@ -13,45 +14,97 @@ start_time = datetime.now()
 #4. Search the contact in the whatsapp web and generate the personalized message for the contact
 #5. Extract the last 3 sent messages in the chat
 #6. Save it in a JSON and excel file for all the contacts read from the excel sheet
-with sync_playwright() as p:
-    print("Launching the Chromium browser...")
-    browser = p.chromium.launch(headless=False)
-    page = browser.new_page()
 
-    print("Navigating to WhatsApp Web...")
-    page.goto("https://web.whatsapp.com/")
-    page.wait_for_load_state("networkidle")
-    page.wait_for_timeout(60000)  # Wait for the user to scan the QR code and log in
-    # print(page.content())
+async def get_last_three_messages():
+    async with async_playwright() as p:
+        user_data_dir = "./whatsapp_session"
+        browser = await p.chromium.launch_persistent_context(
+            user_data_dir,
+            headless = False,
+            args = ["--start-maximized"]
+        )
+        print("Launching the Chromium browser...")
+        page = browser.pages[0]
 
-    #Read the contacts from the excel sheet and send the personalized message to each contact
-    contacts_df = pd.read_excel("contacts.xlsx")
-    for index, row in contacts_df.iterrows():
-        contact_name = row['Name']
-        contact_number = row['Number']
-        personalized_message = row['Message']
+        print("Navigating to WhatsApp Web...")
+        await page.goto("https://web.whatsapp.com/")
 
-        print(f"Searching for contact: {contact_name} ({contact_number})")
-        # search_box = page.locator("div[contenteditable='true'][data-tab='3']")
-        search_box = page.get_by_placeholder("Search or start a new chat")
-        search_box.fill(contact_name)
-        page.wait_for_timeout(2000)  # Wait for the search results to load
+         # Wait for the chat application to load fully
+        print("Waiting for chat list to load (Scan QR code if prompted)...")
+        await page.wait_for_selector("div[data-testid='chat-list']", timeout=60000)
 
-        # Click on the contact from the search results
-        contact_locator = page.locator(f"span[title='{contact_name}']")
-        if contact_locator.count() > 0:
-            contact_locator.first.click()
-            print(f"Contact {contact_name} found. Sending message...")
-            # message_box = page.locator("div[contenteditable='true'][data-tab='6']")
-            message_box = page.locator("div[contenteditable='true']").last
-            page.wait_for_timeout(2000)
-            message_box.fill(personalized_message)
-            message_box.press("Enter")
-            print(f"Message sent to {contact_name}.")
-        else:
-            print(f"Contact {contact_name} not found.")
-    
-    browser.close()
+        #Read the contacts from the excel sheet and send the personalized message to each contact
+        contacts_df = pd.read_excel("contacts.xlsx")
+        messages_data = {}
+        for index, row in contacts_df.iterrows():
+            contact_name = row['Name']
+            contact_number = row['Number']
+            personalized_message = row['Message']
+
+            print(f"Searching for contact: {contact_name} ({contact_number})")
+            search_box = page.get_by_placeholder("Search or start a new chat")
+            await search_box.fill(contact_name)
+            await page.wait_for_timeout(2000)  # Wait for the search results to load
+
+            # Click on the contact from the search results
+            contact_locator = page.locator(f"span[title='{contact_name}']")
+            if await contact_locator.count() > 0:
+                await contact_locator.first.click()
+                print(f"Contact {contact_name} found. Sending message...")
+                message_box = page.locator("div[contenteditable='true']").last
+                await message_box.fill(personalized_message)
+                await message_box.press("Enter")
+                await page.wait_for_timeout(20000)
+                print(f"Message sent to {contact_name}.")
+            else:
+                print(f"Contact {contact_name} not found.")
+
+            print(f"Opening chat with: {contact_name}")
+
+            chat_selector = f"span[title='{contact_name}']"
+            await page.wait_for_selector(chat_selector)
+            await page.click(chat_selector)
+
+            # Wait briefly for the chat window content to render
+            await page.wait_for_timeout(3000)
+
+            # WhatsApp stores actual text bubbles inside 'span.copyable-text > span'
+            message_selector = "span.copyable-text > span"
+            await page.wait_for_selector(message_selector)
+
+             # Fetch all available visible message elements in the open pane
+            message_elements = await page.locator(message_selector).all()
+
+            # Grab the text content of the last 3 elements
+            last_three_elements = message_elements[-3:]
+            text_data = []
+            for i, locator in enumerate(last_three_elements, 1):
+                # Use await to resolve the text from each locator object
+                text = await locator.text_content()
+                text_data.append(text)
+
+            #Save the message with name in JSON and Excel file
+            messages_data[contact_name] = {
+                "Name": contact_name,
+                "Number": contact_number,
+                "Last_3_Messages": text_data
+            }
+
+        date_now = datetime.now().strftime("%Y-%m-%d")
+        file_name = f'whatsapp_report_{date_now}'
+
+        # Save the messages data to a JSON file
+        messages_df = pd.DataFrame.from_dict(messages_data, orient='index')
+        messages_df.to_json(f"{file_name}.json", orient='index', indent=4)
+
+        #Update Excel file with the last 3 messages
+        messages_df.to_excel(f"{file_name}.xlsx", index=False)
+
+        # Keep the session alive briefly before closing
+        await page.wait_for_timeout(2000)
+        await browser.close()
+
+asyncio.run(get_last_three_messages())
 
 print("Playwright script completed successfully.")
 print(f"Current date and time: {datetime.now()}")
