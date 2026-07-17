@@ -65,3 +65,18 @@ example, /greet/{name}) or a query parameter - and returns it inside the respons
 - Keep all your code in a single file named main.py
 
 Refer **fast_api_basicapp > main.py**
+
+*Assignment 2*
+
+> Use Streamlit to build a basic UI for the Grading System
+
+- Use the Streamlit framework to build the user interface. Pure Python for the grading logic.
+- Provide an input widget where the user can enter or choose a mark.
+- Display the entered mark and the resulting grade clearly on the page.
+- Handle the full 0-100 range and cover every grade band above.
+- Give the app a title or heading so it looks finished.
+- Keep all your code in a single file named grade_app.py.
+
+Refer **grade_system > grade_app.py**
+
+Refer [Stremlit](https://github.com/Thirumurugan240/Streamlit.git)
