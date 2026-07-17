@@ -4,3 +4,5 @@ playwright
 #playwright install chromium - install separately
 pandas
 openpyxl
+fastapi
+uvicorn

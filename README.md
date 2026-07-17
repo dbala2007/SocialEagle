@@ -46,3 +46,22 @@ messages from them.
 - whatsapp_report_YYYY-MM-DD.xlsx (a summary).
 
 Refer **playwright_whatsapp_bot > playwright_whatsapp_bot.py**
+
+Refer [PyAutoGUI & Playwright](https://github.com/manojkanur/genai-automation)
+
+## Week 1 - Day 4 Introduction to API (Backend)
+
+*Assignment 1*
+
+> Use FastAPI to build a basic backend API
+
+- Use the FastAPI framework to build the app.
+- Create a root endpoint GET / that returns a simple JSON response (for example, a welcome
+message).
+- Add at least one more endpoint that takes a value from the URL - either a path parameter (for
+example, /greet/{name}) or a query parameter - and returns it inside the response.
+- Run the app with the Uvicorn server and confirm it works in the browser.
+- Open the automatic interactive docs at /docs and check your endpoints there.
+- Keep all your code in a single file named main.py
+
+Refer **fast_api_basicapp > main.py**
