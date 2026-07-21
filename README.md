@@ -1,8 +1,9 @@
 # Gen AI Architect Program by Social Eagle
+# Batch 10 - B10 (1)
 
 [SocialEagle](https://github.com/dbala2007/SocialEagle)
 
-## Week 1 - Day 2 Introduction to Python Assignment
+## B10 - Week 1 - Day 2 Introduction to Python Assignment
 
 *Assignment 1*
 
@@ -12,7 +13,7 @@ Refer **grade_system > grade_system.py**
 
 Refer [PythonConcepts](https://github.com/Thirumurugan240/Python_Concepts) for importaint concepts
 
-## Week 1 - Day 3 Introduction to RPA
+## B10 - Week 1 - Day 3 Introduction to RPA
 
 *Assignment 1*
 
@@ -49,7 +50,7 @@ Refer **playwright_whatsapp_bot > playwright_whatsapp_bot.py**
 
 Refer [PyAutoGUI & Playwright](https://github.com/manojkanur/genai-automation)
 
-## Week 1 - Day 4 Introduction to API (Backend)
+## B10 - Week 1 - Day 4 Introduction to API (Backend)
 
 *Assignment 1*
 
@@ -79,4 +80,21 @@ Refer **fast_api_basicapp > main.py**
 
 Refer **grade_system > grade_app.py**
 
-Refer [Stremlit](https://github.com/Thirumurugan240/Streamlit.git)
+Refer [Streamlit](https://github.com/Thirumurugan240/Streamlit.git)
+
+## B10 - Week 2 - Day 1 RTCFR Assignment
+
+*Assignment 1*
+
+> Use ChatGPT (or any AI tool) to test the RTCFR framework
+
+- Write one RTCFR-structured prompt - do not hand-write the meal plan yourself.
+- Label or clearly express each of the five elements: Role, Task, Context, Few Shots, Response
+Format.
+- The plan it produces must be South Indian, vegetarian, and aimed at healthy weight loss.
+- It must cover all 7 days of the week.
+- Use the Few Shots section to give one or two sample meal recommendations so the model
+copies the right style.
+- Ask for the answer as a clean day-wise table
+
+Refer **Week2 > Day1 Assignment.md**
