@@ -7,3 +7,10 @@ openpyxl
 fastapi
 uvicorn
 streamlit
+langchain
+langchain-community
+langchain-huggingface
+sentence-transformers
+langchain-openai
+faiss-cpu
+langsmith

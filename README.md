@@ -98,3 +98,32 @@ copies the right style.
 - Ask for the answer as a clean day-wise table
 
 Refer **Week2 > Day1 Assignment.md**
+
+## B10 - Week 2 - Day 2 JSON Image and Video Generation Prompting
+
+*Assignment 1*
+
+> Use ChatGPT (or any AI tool) to test the SCALE framework
+> Generate Image and Video using the SCALE JSON prompting technique
+
+- Three images (Gemini and ChatGPT) representing Tamil Nadu Culture
+- One Video (using Qwen) representing Tamil Nadu Culture
+
+Refer **Week2 > Day2 Assignment.md**
+Refer **Week2 > ChatGPT_*.png** for ChatGPT generated images
+Refer **Week2 > Gemini_*.png** for Gemini generated images
+Refer **Week2 > B10-Week2-Day2-SCALE Video Generation Assignment.mp4** for Qwen generated Video
+
+## B10 - Week 2 - Day 3 Langchain and Langsmith
+
+*Assignment 1*
+
+> Use LangChain and LangSmith to execute an Open AI Chat model and view the execution trace
+
+- Use the LangChain framework to talk to the model (do not call the OpenAI API directly).
+- Send an input or prompt to an OpenAI chat model and print the response in the terminal.
+- Enable LangSmith tracing so the run is logged and visible in your LangSmith project.
+- Read all API keys from environment variables - never hard-code or commit them.
+- Keep all your code in a single file named main.py *(Note here I have not used main.py)*
+
+Refer **Week2 > langchain_app.py**
