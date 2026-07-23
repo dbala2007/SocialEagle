@@ -14,3 +14,8 @@ sentence-transformers
 langchain-openai
 faiss-cpu
 langsmith
+pypdf
+python-dotenv
+openai
+tiktoken
+torchvision

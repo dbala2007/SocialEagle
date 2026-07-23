@@ -116,6 +116,8 @@ Refer **Week2 > B10-Week2-Day2-SCALE Video Generation Assignment.mp4** for Qwen 
 
 ## B10 - Week 2 - Day 3 Langchain and Langsmith
 
+Refer [LangChain](https://github.com/Thirumurugan240/Langchain)
+
 *Assignment 1*
 
 > Use LangChain and LangSmith to execute an Open AI Chat model and view the execution trace
@@ -127,3 +129,22 @@ Refer **Week2 > B10-Week2-Day2-SCALE Video Generation Assignment.mp4** for Qwen 
 - Keep all your code in a single file named main.py *(Note here I have not used main.py)*
 
 Refer **Week2 > langchain_app.py**
+
+## B10 - Week 2 - Day 4 RAG Assignment
+
+Refer [RAG](https://github.com/Thirumurugan240/Introduction_to_RAG)
+
+*Assignment 1*
+
+> Use Langchain and Streamlit to accept PDF and retrieve information from the uploaded PDF
+
+- Show a Streamlit interface with a PDF file uploader.
+- When a PDF is uploaded, load it, split it into chunks, create embeddings, and store them in a
+vector database (for example, FAISS or Chroma) so the database is ready to search.
+- Give the user a query box to ask questions about the uploaded PDF.
+- Use LangChain retrieval together with an OpenAI model to answer from the PDF content.
+- Display the answer clearly in the app.
+- Read your API key from an environment variable - never hard-code or commit it.
+- Keep all your code in a single file named app.py.
+
+Refer **Week2 > rag_assignment > app.py**
