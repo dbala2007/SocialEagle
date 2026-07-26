@@ -2,3 +2,4 @@ whatsapp_session
 .env
 venv
 __pycache__
+settings.py

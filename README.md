@@ -148,3 +148,18 @@ vector database (for example, FAISS or Chroma) so the database is ready to searc
 - Keep all your code in a single file named app.py.
 
 Refer **Week2 > rag_assignment > app.py**
+
+[Basic GenAI](https://github.com/Thirumurugan240/Langchain_Advanced)
+[Gemini Chat Reference](https://gemini.google.com/share/d/1mKMv_jY9N74tNkDE4QWwXkxQ0zeP6cVZ?usp=sharing)
+
+## B10 - Week 3 - Day 1 Knowledge Graph RAG Assignment
+
+[KG Rag Mac](https://github.com/manojkanur/KG-rag-mac)
+[KG Rag Windows](https://github.com/manojkanur/KG-RAG)
+[Simple Demo](https://github.com/manojkanur/KG-RAG-Simple)
+
+> Use Neo4j and Knowledge Graph to create RAG chatbot
+
+[Link for RAG](https://www.tn.gov.in/scheme_list.php?dep_id=Mg==)
+
+Refer [**KG Rag Demo Repo**](https://github.com/dbala2007/KGRagDemo)

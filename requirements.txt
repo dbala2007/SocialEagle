@@ -19,3 +19,8 @@ python-dotenv
 openai
 tiktoken
 torchvision
+langchain-experimental
+langchain-neo4j
+neo4j
+certifi
+langchain-classic
