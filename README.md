@@ -99,6 +99,12 @@ copies the right style.
 
 Refer **Week2 > Day1 Assignment.md**
 
+*Assignment 2*
+
+> Prompt exam
+
+Refer **Week2 > Prompt Exam.md**
+
 ## B10 - Week 2 - Day 2 JSON Image and Video Generation Prompting
 
 *Assignment 1*
@@ -154,6 +160,8 @@ Refer **Week2 > rag_assignment > app.py**
 
 ## B10 - Week 3 - Day 1 Knowledge Graph RAG Assignment
 
+*Assignment 1*
+
 [KG Rag Mac](https://github.com/manojkanur/KG-rag-mac)
 [KG Rag Windows](https://github.com/manojkanur/KG-RAG)
 [Simple Demo](https://github.com/manojkanur/KG-RAG-Simple)
@@ -163,3 +171,27 @@ Refer **Week2 > rag_assignment > app.py**
 [Link for RAG](https://www.tn.gov.in/scheme_list.php?dep_id=Mg==)
 
 Refer [**KG Rag Demo Repo**](https://github.com/dbala2007/KGRagDemo)
+
+## B10 - Week 3 - Day 3 AI Automation Assignment using N8N
+
+*Assignment 1*
+
+[AI Automation](https://github.com/manojkanur/AI-Automation)
+
+> Use Self Hosted N8N to extract the given file, clean and provide the output in different file
+
+- If City = Chennai -> CHENNAI sheet / file => chennai_valid_email
+- If City = Other -> OTHER CITIES sheet / file => chennai_invalid_email
+- If Email is VALID -> VALID EMAIL sheet / file => other_valid_email
+- If Email is INVALID -> INVALID EMAIL sheet / fil => other_invalid_email
+- Students from Chennai with a valid email AND Fee_Paid = true => chennai_paid_confirmed
+
+Refer **Week3 > student_enrollment_raw.csv** for input
+Refer **Week3 > AI Automation ETL > ETL Automation Assignment.json** for the N8N workflow
+Refer **Week3 > AI Automation ETL > ETL Automation Flow.png** for the image of the executed flow
+Refer **Week3 > AI Automation ETL > .csv** for the output from the flow
+
+## B10 - Week 3 - Day 4 AI Automation Assignment using N8N Slack and Python
+
+[Githubs for Crawl](https://x.com/ecommartinez/status/2071360274112843962)
+[FireCrawl](https://github.com/firecrawl/firecrawl)

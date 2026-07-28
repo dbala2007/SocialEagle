@@ -1,0 +1,451 @@
+{
+  "name": "mail automation",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "field-subject",
+              "name": "subject",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "field-body",
+              "name": "body",
+              "value": "={{ $json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "field-sender",
+              "name": "sender",
+              "value": "={{ $json.From }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "set-email-fields",
+      "name": "📋 Extract Email Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        320,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "openai-classify",
+      "name": "🤖 OpenAI Classifier",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        544,
+        304
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "IFJQUjPfmgFA6kX0",
+          "name": "OpenAI account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $input.item.json.message?.content || $input.item.json.choices?.[0]?.message?.content || '{}';\n\nlet parsed;\ntry {\n  const cleaned = aiResponse.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  parsed = { category: 'General', confidence: 'Low', reason: 'Could not parse AI response' };\n}\n\nconst validCategories = ['Support', 'Sales', 'Spam', 'General'];\nif (!validCategories.includes(parsed.category)) {\n  parsed.category = 'General';\n}\n\nreturn [{\n  json: {\n    category: parsed.category,\n    confidence: parsed.confidence || 'Medium',\n    reason: parsed.reason || 'Classification complete',\n    sender: $('📋 Extract Email Fields').item.json.sender,\n    subject: $('📋 Extract Email Fields').item.json.subject,\n    body: $('📋 Extract Email Fields').item.json.body,\n    classified_at: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "parse-classification",
+      "name": "🔍 Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        768,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Support",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d35ca838-5679-4a95-b889-18657506cb0d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Support"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Sales",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "413147df-7203-4eb4-8e34-a243ec5b3bab"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Sales"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "Spam",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "b5595833-7a56-4b4c-a20c-c2d0635d111f"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Spam"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "245faeec-e48e-422e-a742-9d3040232411",
+                    "leftValue": "={{ $json.category }}",
+                    "rightValue": "General",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "General"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "switch-router",
+      "name": "🔀 Route by Category",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        960,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#n8n-automation",
+          "mode": "name",
+          "cachedResultName": "n8n-automation"
+        },
+        "text": "=🔴 *Support Email Received*\n\n*From:* {{ $json.sender }}\n*Subject:* {{ $json.subject }}\n*Confidence:* {{ $json.confidence }}\n*Reason:* {{ $json.reason }}\n*Time:* {{ $json.classified_at }}\n\n*Preview:* {{ $json.body.substring(0, 200) }}...",
+        "otherOptions": {}
+      },
+      "id": "slack-support",
+      "name": "💬 Slack — Support Alert",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1200,
+        112
+      ],
+      "webhookId": "86d3111c-2628-4725-bdbd-3e8fa2182f82",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "9gRWG0lBcKW723Fv",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#n8n-automation",
+          "mode": "name",
+          "cachedResultName": "n8n-automation"
+        },
+        "text": "=🟢 *Sales Lead Email*\n\n*From:* {{ $json.sender }}\n*Subject:* {{ $json.subject }}\n*Confidence:* {{ $json.confidence }}\n*Reason:* {{ $json.reason }}\n*Time:* {{ $json.classified_at }}\n\n*Preview:* {{ $json.body.substring(0, 200) }}...",
+        "otherOptions": {}
+      },
+      "id": "slack-sales",
+      "name": "💬 Slack — Sales Lead",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1200,
+        272
+      ],
+      "webhookId": "ed5c1eda-2f7f-4940-951b-e30c63aba6a1",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "9gRWG0lBcKW723Fv",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "#n8n-automation",
+          "mode": "name",
+          "cachedResultName": "n8n-automation"
+        },
+        "text": "=⚠️ *Spam Email Detected*\n\n*From:* {{ $json.sender }}\n*Subject:* {{ $json.subject }}\n*Confidence:* {{ $json.confidence }}\n*Reason:* {{ $json.reason }}\n*Time:* {{ $json.classified_at }}",
+        "otherOptions": {}
+      },
+      "id": "slack-spam",
+      "name": "💬 Slack — Spam Flagged",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1200,
+        432
+      ],
+      "webhookId": "0edccf03-d1e6-42b8-8ce9-4d715625b529",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "9gRWG0lBcKW723Fv",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BECSUGUNS",
+          "mode": "list",
+          "cachedResultName": "n8n-automation"
+        },
+        "text": "=📌 *General Email Received*\n\n*From:* {{ $json.sender }}\n*Subject:* {{ $json.subject }}\n*Confidence:* {{ $json.confidence }}\n*Reason:* {{ $json.reason }}\n*Time:* {{ $json.classified_at }}\n\n*Preview:* {{ $json.body.substring(0, 200) }}...",
+        "otherOptions": {}
+      },
+      "id": "slack-general",
+      "name": "💬 Slack — General Info",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1200,
+        592
+      ],
+      "webhookId": "fa1fddc3-f794-49f8-8054-e40fc454af39",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "9gRWG0lBcKW723Fv",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        96,
+        304
+      ],
+      "id": "683ae8e9-50bb-43bf-9e26-c840cf269d37",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WBfeXRDjVxToI9xP",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "📋 Extract Email Fields": {
+      "main": [
+        [
+          {
+            "node": "🤖 OpenAI Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 OpenAI Classifier": {
+      "main": [
+        [
+          {
+            "node": "🔍 Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔍 Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "🔀 Route by Category",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔀 Route by Category": {
+      "main": [
+        [
+          {
+            "node": "💬 Slack — Support Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "💬 Slack — Sales Lead",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "💬 Slack — Spam Flagged",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "💬 Slack — General Info",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "💬 Slack — Support Alert": {
+      "main": [
+        []
+      ]
+    },
+    "💬 Slack — Sales Lead": {
+      "main": [
+        []
+      ]
+    },
+    "💬 Slack — Spam Flagged": {
+      "main": [
+        []
+      ]
+    },
+    "💬 Slack — General Info": {
+      "main": [
+        []
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "📋 Extract Email Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "Asia/Kolkata",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "versionId": "e06caaef-e48e-4ab0-ba92-8f594d62dd77",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d55ed140be0a49720d8f0ad26a90f076a972b72cb489c8d2d550d373f812213"
+  },
+  "nodeGroups": [],
+  "id": "gGjs4ozUkYH4Y3y8",
+  "tags": []
+}

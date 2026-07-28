@@ -1,0 +1,15 @@
+{
+    "mcpServers": {
+        "n8n": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "n8n-mcp"
+            ],
+            "env": {
+                "N8N_API_URL": "https://n8n-9ybo.srv1778151.hstgr.cloud/api/v1",
+                "N8N_API_KEY": ""
+            }
+        }
+    }
+}

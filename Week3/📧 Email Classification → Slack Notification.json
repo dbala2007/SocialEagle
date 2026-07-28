@@ -1,0 +1,200 @@
+{
+  "name": "📧 Email Classification → Slack Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "id": "gmail-trigger",
+      "name": "📨 Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        224,
+        304
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WBfeXRDjVxToI9xP",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "chat",
+        "prompt": {
+          "messages": [
+            {
+              "content": "={{ $json.snippet }}"
+            }
+          ]
+        },
+        "options": {},
+        "requestOptions": {}
+      },
+      "id": "openai-classify",
+      "name": "🤖 OpenAI Classify Email",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        304
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "IFJQUjPfmgFA6kX0",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiText = $input.item.json.message?.content || $input.item.json.choices?.[0]?.message?.content || '';\n\nlet parsed;\ntry {\n  const clean = aiText.replace(/```json|```/g, '').trim();\n  parsed = JSON.parse(clean);\n} catch (e) {\n  parsed = { category: 'General', priority: 'Low', summary: 'Could not parse AI response' };\n}\n\nconst prev = $('\\ud83d\\udce8 Gmail Trigger').item.json;\n\nconst emojiMap = {\n  'Support': '\\ud83d\\udd27',\n  'Sales': '\\ud83d\\udcb0',\n  'Spam': '\\ud83d\\uddd1\\ufe0f',\n  'General': '\\ud83d\\udccc'\n};\n\nconst priorityEmoji = {\n  'High': '\\ud83d\\udd34',\n  'Medium': '\\ud83d\\udfe1',\n  'Low': '\\ud83d\\udfe2'\n};\n\nreturn [{\n  json: {\n    category: parsed.category || 'General',\n    priority: parsed.priority || 'Low',\n    summary: parsed.summary || 'No summary',\n    categoryEmoji: emojiMap[parsed.category] || '\\ud83d\\udccc',\n    priorityEmoji: priorityEmoji[parsed.priority] || '\\ud83d\\udfe2',\n    from: prev.from || 'Unknown',\n    subject: prev.subject || '(No Subject)',\n    date: prev.date || new Date().toISOString()\n  }\n}];"
+      },
+      "id": "parse-json",
+      "name": "🔧 Parse AI Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "spam-check",
+              "leftValue": "={{ $json.category }}",
+              "rightValue": "Spam",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "filter-spam",
+      "name": "🚫 Skip Spam",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        880,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BECSUGUNS",
+          "mode": "list",
+          "cachedResultName": "n8n-automation"
+        },
+        "text": "={{ $json.categoryEmoji }} *[{{ $json.category }}]* — {{ $json.priorityEmoji }} {{ $json.priority }} Priority\n\n*From:* {{ $json.from }}\n*Subject:* {{ $json.subject }}\n*Summary:* {{ $json.summary }}\n*Received:* {{ $json.date }}",
+        "otherOptions": {}
+      },
+      "id": "slack-notify",
+      "name": "💬 Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        1104,
+        224
+      ],
+      "webhookId": "6fe08ad6-349e-4ae2-9c85-3fb4543df499",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "9gRWG0lBcKW723Fv",
+          "name": "Slack account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "📨 Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "🤖 OpenAI Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🤖 OpenAI Classify Email": {
+      "main": [
+        [
+          {
+            "node": "🔧 Parse AI Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🔧 Parse AI Response": {
+      "main": [
+        [
+          {
+            "node": "🚫 Skip Spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "🚫 Skip Spam": {
+      "main": [
+        [
+          {
+            "node": "💬 Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "Asia/Kolkata",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "versionId": "8e406ab9-ec15-4f24-983d-2bdbf7ae66da",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5d55ed140be0a49720d8f0ad26a90f076a972b72cb489c8d2d550d373f812213"
+  },
+  "nodeGroups": [],
+  "id": "OizLLXdMKvBFYjxd",
+  "tags": []
+}

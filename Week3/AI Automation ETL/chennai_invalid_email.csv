@@ -1,0 +1,6 @@
+﻿output.Student_ID,output.Name,output.Email,output.Phone,output.Course,output.Fee_Paid,output.City,output.Enrolled_Date
+STU1001,Manoj K,INVALID,9876543210,Python,True,Chennai,2025-05-23
+STU1014,Lakshmi,INVALID,8811223344,Data Science,True,Chennai,2025-03-07
+STU1027,Ramesh M,INVALID,7878787878,Python,True,Chennai,2025-03-01
+STU1032,Swetha L,INVALID,MISSING,Data Science,True,Chennai,2025-05-26
+STU1047,Ganesh P,INVALID,7565656565,Python,True,Chennai,2025-06-27
