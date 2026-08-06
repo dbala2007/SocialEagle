@@ -1,0 +1,292 @@
+{
+  "name": "Gmail Automation Flow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        16
+      ],
+      "id": "55b6df53-e270-43e1-8eec-b8eab5e1b3e8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1DZeX3DEmZvD4j5WzM7C7Zvy9EDl8WapwqmCyPuxEDFs",
+          "mode": "list",
+          "cachedResultName": "N8N Test",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DZeX3DEmZvD4j5WzM7C7Zvy9EDl8WapwqmCyPuxEDFs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1DZeX3DEmZvD4j5WzM7C7Zvy9EDl8WapwqmCyPuxEDFs/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -240,
+        16
+      ],
+      "id": "d109b846-e649-49ec-b6d4-2c640af9c846",
+      "name": "N8N Test Sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "g8KSU0r0UEjVK182",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e1eaf248-2f62-40a9-94f6-f6551bd1523a",
+              "leftValue": "={{ $json['Mail ID'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "e939c33a-0c7d-4a66-a4c1-a4287b14d0a5",
+              "leftValue": "={{ $json.Name }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "448f91c4-bc88-492a-a236-01d30d50d7bc",
+              "leftValue": "={{ $json.Course }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "c4a6c929-33d3-4f2f-b9a4-0a24e57c8813",
+              "leftValue": "={{ $json.Status }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -32,
+        16
+      ],
+      "id": "1a56b67c-0a28-44b2-ab28-efb8a33deb59",
+      "name": "Check Input Empty"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -160
+      ],
+      "id": "1f6c472f-0fc1-4387-a9cf-a2a3cdaa741e",
+      "name": "NOP"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        192,
+        48
+      ],
+      "id": "bf09d7a5-6edf-489f-ab5f-3f6cc902e94f",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Mail ID'] }}",
+        "subject": "={{ $json.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.Body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        64
+      ],
+      "id": "9fa8443b-2584-46cc-b4b6-500307cb3b2b",
+      "name": "Send Message",
+      "webhookId": "71957bb7-8149-48dd-b599-4a3b447bd03b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ayYReRkzEMIRiQJY",
+          "name": "genain8nautomation"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0510df12-8667-41a7-aa9c-137a3d69359a",
+              "name": "Mail ID",
+              "value": "={{ $json['Mail ID'] }}",
+              "type": "string"
+            },
+            {
+              "id": "baaa4674-48c9-422b-8387-31bdd2807663",
+              "name": "Subject",
+              "value": "=Welcome {{ $json.Name }} to the {{ $json.Course }} course",
+              "type": "string"
+            },
+            {
+              "id": "d1ea12a9-9896-4f8c-9574-49afbaa20506",
+              "name": "=Body",
+              "value": "=Hi  {{ $json.Name }},\n\nHere is the latest data from the sheet\nName: {{ $json.Name }}\nCourse: {{ $json.Course }}\nStatus: {{ $json.Status }}\n\nRegards,\nGMAIL Automation Bot",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        64
+      ],
+      "id": "d3ffc5ab-5bba-48eb-91f7-bc7acbe64b2f",
+      "name": "Set the Email Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "N8N Test Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "N8N Test Sheet": {
+      "main": [
+        [
+          {
+            "node": "Check Input Empty",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Input Empty": {
+      "main": [
+        [
+          {
+            "node": "NOP",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Set the Email Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Message": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set the Email Fields": {
+      "main": [
+        [
+          {
+            "node": "Send Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "fb6aaa94-4f4d-449b-aa15-5217adadc499",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "BvNx0LOfgJaAQ1iD",
+  "tags": []
+}

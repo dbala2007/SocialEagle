@@ -195,3 +195,7 @@ Refer **Week3 > AI Automation ETL > .csv** for the output from the flow
 
 [Githubs for Crawl](https://x.com/ecommartinez/status/2071360274112843962)
 [FireCrawl](https://github.com/firecrawl/firecrawl)
+
+Refer **Week3 > Slack Recipe Automation.json** for the Slack Automation
+Refer **Week3 > Gmail Automation Flow.json** for the Gmail Automation
+
