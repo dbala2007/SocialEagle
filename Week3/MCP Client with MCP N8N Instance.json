@@ -1,0 +1,178 @@
+{
+  "name": "MCP Client",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "4ff9765e-3d5f-4c2f-b0a6-86fe0d6ed0a7",
+      "name": "When chat message received",
+      "webhookId": "b7acd02c-822d-45e7-af8c-1f5b4c7276e1"
+    },
+    {
+      "parameters": {
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "6f507262-7bff-4e0b-93a1-5a484e78b67a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        192
+      ],
+      "id": "71e30181-03de-4bf1-8542-29c5e339033e",
+      "name": "gpt-4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -192,
+        176
+      ],
+      "id": "1908df97-50e2-467d-a2ad-6b1161006447",
+      "name": "5 Simple Memory"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n-pkrc.srv1857842.hstgr.cloud/mcp/mcpserver",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.4,
+      "position": [
+        -32,
+        160
+      ],
+      "id": "8d98739e-f1aa-486e-b135-cbbde04153f3",
+      "name": "Connect to MCP SERVER"
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://n8n-pkrc.srv1857842.hstgr.cloud/mcp-server/http",
+        "authentication": "mcpOAuth2Api",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.4,
+      "position": [
+        112,
+        176
+      ],
+      "id": "b5d17291-d30d-410b-9c66-7da4c632ad41",
+      "name": "MCP N8N Instance",
+      "credentials": {
+        "mcpOAuth2Api": {
+          "id": "SBIfWWeH9OS8gC9f",
+          "name": "MCP N8N Instance OAuth"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Connect to MCP SERVER": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP N8N Instance": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d07e59c8-1f51-447e-8f8a-6d28bde6c67d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "YIABbd21R79I60iX",
+  "tags": []
+}

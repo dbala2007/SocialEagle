@@ -1,0 +1,343 @@
+{
+  "name": "Web Page Multi Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.query.message }}",
+        "needsFallback": true,
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        -48
+      ],
+      "id": "62ed092e-c67f-4134-b081-c55a819f5168",
+      "name": "AI Master Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -128,
+        160
+      ],
+      "id": "cbac89fe-7f34-421f-a0b0-2b4b459076d8",
+      "name": "gpt-4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek-v4-flash",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        16,
+        160
+      ],
+      "id": "85ea6eb7-c525-43cb-a360-dd897a6cea92",
+      "name": "deepseek-v4-flash",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "wqG4J44kt2TbnFoE",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.query.x-real-ip }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        176,
+        160
+      ],
+      "id": "d991f957-e635-4ea3-9709-ecb5248a58d2",
+      "name": "5 Simple Memory"
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "needsFallback": true,
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        384,
+        160
+      ],
+      "id": "8db2c99c-4144-4a21-8324-8c90a5266217",
+      "name": "AI Sug Agent"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-v4-flash",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        272,
+        352
+      ],
+      "id": "0de02224-2e88-4c38-a181-bd7153c28d0f",
+      "name": "deepseek-v4-flash (2)",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "wqG4J44kt2TbnFoE",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        400,
+        352
+      ],
+      "id": "b35b50b2-b7de-44b4-9dc4-373525141588",
+      "name": "gpt-4o-mini (2)",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        352
+      ],
+      "id": "e1e127b7-0390-44fd-8d32-6013c9073078",
+      "name": "5 Simple Memory1"
+    },
+    {
+      "parameters": {
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query__q_', ``, 'string') }}",
+        "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location__location_', ``, 'string') }}",
+        "additionalFields": {
+          "google_domain": "google.co.in"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        736,
+        352
+      ],
+      "id": "7d18743a-91c8-47f0-b00a-3026036b053f",
+      "name": "Google search in SerpApi",
+      "credentials": {
+        "serpApi": {
+          "id": "6Mq6BKJVFIXxCKMS",
+          "name": "SerpApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "mcpmultiagent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -336,
+        -48
+      ],
+      "id": "28c18cc8-378b-4dd1-a8d6-94e8b6dd5513",
+      "name": "Webhook",
+      "webhookId": "ec4b8d7b-758f-4046-beb9-d170b76e6def"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        352,
+        -48
+      ],
+      "id": "ad89fefc-b41b-4996-9e0f-5450e21653b6",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "AI Master Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek-v4-flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Sug Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek-v4-flash (2)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini (2)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google search in SerpApi": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c15e73f7-059b-4165-859a-876a52a99a9a",
+  "meta": {
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "De3CiZi4wsw2igX2",
+  "tags": []
+}

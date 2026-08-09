@@ -1,0 +1,362 @@
+{
+  "name": "Multi Agent with Fallback",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -432,
+        -16
+      ],
+      "id": "1ccfeeef-8d30-4044-b111-27006af89180",
+      "name": "Telegram Trigger",
+      "webhookId": "5f00c211-117c-4c43-bd65-50a19bdcec9c",
+      "credentials": {
+        "telegramApi": {
+          "id": "XbpmMQKNl1STbfWX",
+          "name": "Social Eagle Gen AI Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "needsFallback": true,
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -224,
+        -16
+      ],
+      "id": "cfde1faa-c6f5-4aaf-b0d8-4dfeda3c747e",
+      "name": "AI Master Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -288,
+        192
+      ],
+      "id": "55811d21-cc09-4cd3-af37-bff5e3d99ce8",
+      "name": "gpt-4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "deepseek-v4-flash",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        192
+      ],
+      "id": "aa3208dd-1692-482c-a528-a2e36e618f65",
+      "name": "deepseek-v4-flash",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "wqG4J44kt2TbnFoE",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        16,
+        192
+      ],
+      "id": "cf0d54e3-b3d9-4d07-b843-e056ad0f08f9",
+      "name": "5 Simple Memory"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        144,
+        -16
+      ],
+      "id": "bce2f771-946b-4bee-8206-9822ebd421b9",
+      "name": "Send a text message",
+      "webhookId": "ea11e40e-6373-4d02-8a0d-53ae6fd8c8bb",
+      "credentials": {
+        "telegramApi": {
+          "id": "XbpmMQKNl1STbfWX",
+          "name": "Social Eagle Gen AI Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Prompt__User_Message_', ``, 'string') }}",
+        "needsFallback": true,
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        224,
+        192
+      ],
+      "id": "b520bbb4-4060-4a64-9fd5-cb62f2b127d1",
+      "name": "AI Sug Agent"
+    },
+    {
+      "parameters": {
+        "model": "deepseek-v4-flash",
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        112,
+        384
+      ],
+      "id": "86aa056b-1e43-43b6-9c53-1e7183b33d70",
+      "name": "deepseek-v4-flash (2)",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "wqG4J44kt2TbnFoE",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        384
+      ],
+      "id": "96537dca-19e6-4fee-bb54-e6ba4ca09b75",
+      "name": "gpt-4o-mini (2)",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        400,
+        384
+      ],
+      "id": "02180501-8be4-4c9f-9684-d41543f2a4c3",
+      "name": "5 Simple Memory1"
+    },
+    {
+      "parameters": {
+        "q": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Search_Query__q_', ``, 'string') }}",
+        "location": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Location__location_', ``, 'string') }}",
+        "additionalFields": {
+          "google_domain": "google.co.in"
+        },
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApiTool",
+      "typeVersion": 1,
+      "position": [
+        576,
+        384
+      ],
+      "id": "016fd708-0225-46d1-b071-1d458e844337",
+      "name": "Google search in SerpApi",
+      "credentials": {
+        "serpApi": {
+          "id": "6Mq6BKJVFIXxCKMS",
+          "name": "SerpApi account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek-v4-flash": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Master Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Sug Agent": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Master Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "deepseek-v4-flash (2)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini (2)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google search in SerpApi": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Sug Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b23da239-d3bc-4272-b63a-d9d6a93af2d6",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "0HfKAcmjvEBWYj7c",
+  "tags": []
+}

@@ -1,0 +1,160 @@
+{
+  "name": "Gmail AI Agent Sample",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -272,
+        0
+      ],
+      "id": "88c2d971-4ba2-49c5-bb9d-862903257716",
+      "name": "When chat message received",
+      "webhookId": "3baadf2b-2d50-4d10-bfcf-c292ddafc766"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxRetries": 2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -96,
+        208
+      ],
+      "id": "30106c8d-ee94-4e14-8419-896fee4a3393",
+      "name": "gpt-4o-mini",
+      "credentials": {
+        "openAiApi": {
+          "id": "U2RR4p662efe4KvA",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "You are a helpful assistant who uses GMAIL tool to send a personalized message to the provided mail id. In regards put your name as GMAIL Agent while sending the mail.\n\nIf the ask is not for GMAIL or Mail or Email, DO NOT CALL the GMAIL tool\n\nUse Soft and Polite tone\nDo not use too much emojis\nRestrict to 100 to 150 words in the email "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "2bc8940d-4b46-47e1-b82d-2883ba835ebb",
+      "name": "GMAIL AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        32,
+        272
+      ],
+      "id": "a641b837-4fda-42cd-8759-d804e95cff6f",
+      "name": "5 Simple Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Sender_Name', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        144,
+        256
+      ],
+      "id": "c458bab6-0cda-457b-81d4-bd1f8fed3dcb",
+      "name": "GMAIL Send",
+      "webhookId": "2b963b52-8ad1-4d94-9c36-aafe0f9cc0cc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ayYReRkzEMIRiQJY",
+          "name": "genain8nautomation"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "GMAIL AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "gpt-4o-mini": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "GMAIL AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "5 Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "GMAIL AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GMAIL Send": {
+      "ai_tool": [
+        [
+          {
+            "node": "GMAIL AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "15629ce4-c93e-47e3-a65e-0125a321d59a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "zfsbl5nwFYEfiQCK",
+  "tags": []
+}
