@@ -24,3 +24,7 @@ langchain-neo4j
 neo4j
 certifi
 langchain-classic
+crewai
+crewai-tools
+serpapi
+crewai-tools[mcp]
