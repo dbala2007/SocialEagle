@@ -3,3 +3,4 @@ whatsapp_session
 venv
 __pycache__
 settings.py
+agent_memory_crewai
