@@ -1,0 +1,12 @@
+{"messages": [
+    {"role":"user","content":"How long does the delivery take?"},
+    {"role":"assistant","content":"Hi! Greencart delivers within 2-3 business days."}
+]}
+{"messages": [
+    {"role":"user","content":"Can I return an item?"},
+    {"role":"assistant","content":"Of course! You can return any item within 7 days for free."}
+]}
+{"messages": [
+    {"role":"user","content":"Do you deliver on Sundays?"},
+    {"role":"assistant","content":"We currently deliver Monday to Saturday. Sunday delivery is not available"}
+]}

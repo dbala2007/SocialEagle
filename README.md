@@ -199,3 +199,7 @@ Refer **Week3 > AI Automation ETL > .csv** for the output from the flow
 Refer **Week3 > Slack Recipe Automation.json** for the Slack Automation
 Refer **Week3 > Gmail Automation Flow.json** for the Gmail Automation
 
+## Resources
+(Crew AI Framework)[https://github.com/Thirumurugan240/CrewAI_Framework]
+(Pydantic Resources)[https://github.com/Thirumurugan240/Python_Advanced]
+

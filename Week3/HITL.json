@@ -1,0 +1,198 @@
+{
+  "name": "HITL",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -464,
+        -16
+      ],
+      "id": "a01f3503-19f2-4884-9e57-78c3f94d19b9",
+      "name": "Telegram Trigger",
+      "webhookId": "029461e0-03a6-49a3-894c-cad6f875292d",
+      "credentials": {
+        "telegramApi": {
+          "id": "XbpmMQKNl1STbfWX",
+          "name": "Social Eagle Gen AI Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a AI Research assistant.\n\n{{ $json.message.text }}",
+        "options": {
+          "maxIterations": 5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "634f972d-9f89-4055-93aa-4f121d413d2a",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        176
+      ],
+      "id": "e9e504df-8ced-4041-abe3-fc894563d473",
+      "name": "DeepSeek Chat Model",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "wqG4J44kt2TbnFoE",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.from.id }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -176,
+        176
+      ],
+      "id": "9ab4f4c2-8b77-4a40-b3ac-5729081cc706",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "message": "={{ $json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        -16
+      ],
+      "id": "368d89a6-b16c-4f9d-81a4-81412fa93703",
+      "name": "HITL",
+      "webhookId": "8eabf0fe-0183-4a6b-867c-59f94533827d",
+      "credentials": {
+        "telegramApi": {
+          "id": "XbpmMQKNl1STbfWX",
+          "name": "Social Eagle Gen AI Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $('AI Agent').item.json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        -16
+      ],
+      "id": "226d2033-cf83-41e8-8d9e-696803638868",
+      "name": "Send a text message",
+      "webhookId": "0ed614ce-e313-43e0-96a1-0f4b71701476",
+      "credentials": {
+        "telegramApi": {
+          "id": "XbpmMQKNl1STbfWX",
+          "name": "Social Eagle Gen AI Bot"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "HITL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HITL": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "231e086d-5d8b-471e-8acd-d7667b960944",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "90167ecb1f0c5dbc954eaeb37c2beaa1412f0562a77707ba903f90c20f4708d1"
+  },
+  "nodeGroups": [],
+  "id": "RXqSDwMpRtiCL3U9",
+  "tags": []
+}

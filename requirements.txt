@@ -28,3 +28,8 @@ crewai
 crewai-tools
 serpapi
 crewai-tools[mcp]
+autogen-agentchat
+autogen-ext[openai]
+transformers
+torch
+datasets
